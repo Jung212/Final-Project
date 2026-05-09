@@ -5,6 +5,28 @@ import pygame
 # Make moving platforms class
 # make a win condition that brings you to a different section for another level to be drawn
 
+class Draw():
+
+    def __init__(self, screen):
+        self.screen = screen
+
+    def background(self):
+        self.screen.fill('cyan')
+
+    def floor(self, floor):
+        pygame.draw.rect(self.screen, (0, 255, 0), floor)
+
+    def player(self, player):
+        pygame.draw.rect(self.screen, (0, 0, 255), player)
+
+    def spikes(self):
+        for x in range (200,600,25):
+            pygame.draw.polygon(self.screen, (255, 0, 0), [
+            (x, 575),
+            (x + 12, 550),
+            (x + 25, 575)
+            ])
+
 def main():
     pygame.init()
     pygame.display.set_caption("Platform Game")
@@ -18,6 +40,7 @@ def main():
 
     resolution = (800, 600)
     screen = pygame.display.set_mode(resolution)
+    draw = Draw(screen)
     running = True
     while running:
         clock.tick(60)
@@ -39,20 +62,14 @@ def main():
         velocity_y += gravity
         player.y += velocity_y
 
-        if player.bottom >= ground.top:
+        if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
             velocity_y = 0
 
-
-        screen.fill('cyan')
-        pygame.draw.rect(screen, (0, 255, 0), ground) 
-        pygame.draw.rect(screen, (0, 0, 255), player)
-        pygame.draw.polygon(screen, (255, 0, 0), [
-        (388, 575),
-        (400, 550),
-        (412, 575)
-        ])
-
+        draw.background()
+        draw.floor(ground)
+        draw.player(player)
+        draw.spikes()
 
         pygame.display.flip()
     pygame.quit()
