@@ -27,6 +27,27 @@ class Draw():
             (x + 25, 575)
             ])
 
+class Control():
+
+    def movement(self, player, keys):
+        if keys[pygame.K_a]:
+            player.x -= 5
+        
+        if keys[pygame.K_d]:
+            player.x += 5
+
+    def jump(self, player, ground, velocity_y, keys):
+        if keys[pygame.K_SPACE] and player.bottom == ground.top:
+            velocity_y = -10
+        return velocity_y
+    
+    def reset(self, player, keys):
+        if keys[pygame.K_r]:
+            player.x = 50
+            player.y = 500
+            print("You are Dead!")
+
+
 def main():
     pygame.init()
     pygame.display.set_caption("Platform Game")
@@ -41,7 +62,9 @@ def main():
     resolution = (800, 600)
     screen = pygame.display.set_mode(resolution)
     draw = Draw(screen)
+    control = Control()
     running = True
+
     while running:
         clock.tick(60)
 
@@ -50,14 +73,9 @@ def main():
                 running = False
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            player.x -= 5
-
-        if keys[pygame.K_d]:
-            player.x += 5
-
-        if keys[pygame.K_SPACE] and player.bottom == ground.top:
-            velocity_y = -10
+        control.movement(player, keys)
+        velocity_y = control.jump(player, ground, velocity_y, keys)
+        control.reset(player, keys)
 
         velocity_y += gravity
         player.y += velocity_y
