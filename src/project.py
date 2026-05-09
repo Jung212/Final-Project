@@ -2,6 +2,8 @@ import random
 import pygame
 
 # make a draw class for all drawing needs
+# Make moving platforms class
+# make a win condition that brings you to a different section for another level to be drawn
 
 def main():
     pygame.init()
