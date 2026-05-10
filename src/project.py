@@ -92,10 +92,10 @@ def main():
         moving1.y += platform_speed
 
         if moving1.top <= 300:
-            platform_speed = 3
+            platform_speed = 2
 
         if moving1.bottom >= 575:
-            platform_speed = -3
+            platform_speed = -2
 
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
