@@ -39,8 +39,8 @@ class Control():
         if keys[pygame.K_d]:
             player.x += 5
 
-    def jump(self, player, ground, velocity_y, keys):
-        if keys[pygame.K_SPACE] and player.bottom == ground.top:
+    def jump(self, grounded, velocity_y, keys):
+        if keys[pygame.K_SPACE] and grounded:
             velocity_y = -10
         return velocity_y
     
@@ -70,6 +70,7 @@ def main():
     draw = Draw(screen)
     control = Control()
     running = True
+    grounded = False
 
     while running:
         clock.tick(60)
@@ -80,8 +81,10 @@ def main():
 
         keys = pygame.key.get_pressed()
         control.movement(player, keys)
-        velocity_y = control.jump(player, ground, velocity_y, keys)
+        velocity_y = control.jump(grounded, velocity_y, keys)
         control.reset(player, keys)
+
+        grounded = False
 
         velocity_y += gravity
         player.y += velocity_y
@@ -97,6 +100,17 @@ def main():
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
             velocity_y = 0
+            grounded = True
+
+        if player.colliderect(moving1) and velocity_y >= 0:
+
+            player.bottom = moving1.top
+
+            velocity_y = 0
+
+            grounded = True
+
+            player.y += platform_speed
 
         if player.colliderect(spikes):
             player.x = 50
