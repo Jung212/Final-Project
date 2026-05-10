@@ -55,6 +55,7 @@ def main():
 
     player = pygame.Rect(50, 500, 25, 25)
     ground = pygame.Rect(0, 575, 800, 100)
+    spikes = pygame.Rect(200, 550, 400, 25)
 
     velocity_y = 0
     gravity = 0.5
@@ -83,6 +84,11 @@ def main():
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
             velocity_y = 0
+
+        if player.colliderect(spikes):
+            player.x = 50
+            player.y = 500
+            print("spikes are sharp!")
 
         draw.background()
         draw.floor(ground)
