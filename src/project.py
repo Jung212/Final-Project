@@ -16,6 +16,9 @@ class Draw():
     def floor(self, floor):
         pygame.draw.rect(self.screen, (0, 255, 0), floor)
 
+    def moving1(self, moving1):
+        pygame.draw.rect(self.screen, (255, 75, 255), moving1)
+
     def player(self, player):
         pygame.draw.rect(self.screen, (0, 0, 255), player)
 
@@ -56,7 +59,9 @@ def main():
     player = pygame.Rect(50, 500, 25, 25)
     ground = pygame.Rect(0, 575, 800, 100)
     spikes = pygame.Rect(200, 550, 400, 25)
+    moving1 = pygame.Rect(200, 400, 100, 20)
 
+    platform_speed = 3
     velocity_y = 0
     gravity = 0.5
 
@@ -81,6 +86,14 @@ def main():
         velocity_y += gravity
         player.y += velocity_y
 
+        moving1.y += platform_speed
+
+        if moving1.top >= 200:
+            platform_speed = -3
+
+        if moving1.bottom <= 500:
+            platform_speed = 3
+
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
             velocity_y = 0
@@ -92,6 +105,7 @@ def main():
 
         draw.background()
         draw.floor(ground)
+        draw.moving1(moving1)
         draw.player(player)
         draw.spikes()
 
