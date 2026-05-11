@@ -16,6 +16,9 @@ class Draw():
     def floor(self, floor):
         pygame.draw.rect(self.screen, (0, 255, 0), floor)
 
+    def platform2(self, platform2):
+        pygame.draw.rect(self.screen, (255, 200, 0), platform2)
+
     def moving1(self, moving1):
         pygame.draw.rect(self.screen, (255, 75, 255), moving1)
 
@@ -29,6 +32,9 @@ class Draw():
             (x + 12, 550),
             (x + 25, 575)
             ])
+
+    def goal(self, goal):
+        pygame.draw.rect(self.screen, (0, 0, 0), goal)
 
 class Control():
 
@@ -50,6 +56,23 @@ class Control():
             player.y = 500
             print("You are Dead!")
 
+class Level():
+
+    def __init__(self):
+        self.level = 1
+
+    def next_level(self, player, goal):
+
+        if player.colliderect(goal):
+
+            self.level += 1
+
+            player.x = 50
+            player.y = 500
+
+            print("Level:", self.level)
+        
+
 
 def main():
     pygame.init()
@@ -60,6 +83,8 @@ def main():
     ground = pygame.Rect(0, 575, 800, 100)
     spikes = pygame.Rect(200, 550, 400, 25)
     moving1 = pygame.Rect(200, 400, 100, 20)
+    platform2 = pygame.Rect(450, 350, 100, 20)
+    goal = pygame.Rect(700, 500, 40, 40)
 
     platform_speed = 3
     velocity_y = 0
@@ -69,6 +94,7 @@ def main():
     screen = pygame.display.set_mode(resolution)
     draw = Draw(screen)
     control = Control()
+    level = Level()
     running = True
     grounded = False
 
@@ -83,6 +109,7 @@ def main():
         control.movement(player, keys)
         velocity_y = control.jump(grounded, velocity_y, keys)
         control.reset(player, keys)
+        level.next_level(player,goal)
 
         grounded = False
 
@@ -96,6 +123,15 @@ def main():
 
         if moving1.bottom >= 575:
             platform_speed = -2
+
+        if level.level == 2:
+
+            platform2.x = 250
+            platform2.y = 450
+
+            moving1.x = 500
+
+            spikes.x = 100
 
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
@@ -112,6 +148,14 @@ def main():
 
             player.y += platform_speed
 
+        if player.colliderect(platform2) and velocity_y >= 0:
+
+            player.bottom = platform2.top
+
+            velocity_y = 0
+
+            grounded = True
+
         if player.colliderect(spikes):
             player.x = 50
             player.y = 500
@@ -120,8 +164,10 @@ def main():
         draw.background()
         draw.floor(ground)
         draw.moving1(moving1)
+        draw.platform2(platform2)
         draw.player(player)
         draw.spikes()
+        draw.goal(goal)
 
         pygame.display.flip()
     pygame.quit()
