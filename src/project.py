@@ -155,6 +155,7 @@ def main():
 
             platform2.width = 400
             platform2.height = 20
+            platform2.x = 200
             platform2.y = 500
 
             moving1.width = 0
