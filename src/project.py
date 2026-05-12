@@ -1,10 +1,6 @@
 import random
 import pygame
 
-# make a draw class for all drawing needs
-# Make moving platforms class
-# make a win condition that brings you to a different section for another level to be drawn
-
 class Draw():
 
     def __init__(self, screen):
@@ -25,8 +21,8 @@ class Draw():
     def player(self, player):
         pygame.draw.rect(self.screen, (0, 0, 255), player)
 
-    def spikes(self):
-        for x in range (200,600,25):
+    def spikes(self, spikes):
+        for x in range (spikes.x, spikes.x + spikes.width, 25):
             pygame.draw.polygon(self.screen, (255, 0, 0), [
             (x, 575),
             (x + 12, 550),
@@ -35,6 +31,16 @@ class Draw():
 
     def goal(self, goal):
         pygame.draw.rect(self.screen, (0, 0, 0), goal)
+
+    def win(self):
+
+        font = pygame.font.SysFont("Comic Sans MS", 80, bold=True)
+
+        text = font.render("You Win!", True, (0, 255, 0))
+
+        text_rect = text.get_rect(center=(400, 300))
+
+        self.screen.blit(text, text_rect)
 
 class Control():
 
@@ -71,6 +77,30 @@ class Level():
             player.y = 500
 
             print("Level:", self.level)
+    
+    def moving_platform(self, moving1, platform_speed):
+        if self.level == 1:
+
+            moving1.y += platform_speed
+
+            if moving1.top <= 300:
+               platform_speed = 2
+
+            if moving1.bottom >= 575:
+                platform_speed = -2
+
+        if self.level == 2:
+
+            moving1.x += platform_speed
+
+            if moving1.left <= 100:
+                platform_speed = 2
+
+            if moving1.right >= 700:
+                platform_speed = -2
+
+        return platform_speed
+
         
 
 
@@ -84,7 +114,7 @@ def main():
     spikes = pygame.Rect(200, 550, 400, 25)
     moving1 = pygame.Rect(200, 400, 100, 20)
     platform2 = pygame.Rect(450, 350, 100, 20)
-    goal = pygame.Rect(700, 500, 40, 40)
+    goal = pygame.Rect(750, 500, 40, 40)
 
     platform_speed = 3
     velocity_y = 0
@@ -111,27 +141,34 @@ def main():
         control.reset(player, keys)
         level.next_level(player,goal)
 
+        if level.level == 2:
+
+            platform2.width = 0
+            platform2.height = 0
+
+            spikes.x = 100
+            spikes.width = 600
+
+            moving1.y = 500
+
+        if level.level == 3:
+
+            platform2.width = 400
+            platform2.height = 20
+            platform2.y = 500
+
+            moving1.width = 0
+            moving1.height = 0
+
+            goal.width = 0
+            goal.height = 0
+
         grounded = False
 
         velocity_y += gravity
         player.y += velocity_y
 
-        moving1.y += platform_speed
-
-        if moving1.top <= 300:
-            platform_speed = 2
-
-        if moving1.bottom >= 575:
-            platform_speed = -2
-
-        if level.level == 2:
-
-            platform2.x = 250
-            platform2.y = 450
-
-            moving1.x = 500
-
-            spikes.x = 100
+        platform_speed = level.moving_platform(moving1, platform_speed)
 
         if player.bottom >= ground.top: #Gravity
             player.bottom = ground.top
@@ -166,8 +203,11 @@ def main():
         draw.moving1(moving1)
         draw.platform2(platform2)
         draw.player(player)
-        draw.spikes()
+        draw.spikes(spikes)
         draw.goal(goal)
+
+        if level.level == 3:
+            draw.win()
 
         pygame.display.flip()
     pygame.quit()
