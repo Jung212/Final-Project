@@ -1,4 +1,5 @@
 # Title
+Blue Square Adventures
 
 ## Repository
 https://github.com/Jung212/Final-Project
