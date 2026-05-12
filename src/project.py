@@ -105,7 +105,7 @@ class Level():
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Platform Game")
+    pygame.display.set_caption("Blue Cube Adventures")
     clock = pygame.time.Clock()
 
     player = pygame.Rect(50, 500, 25, 25)
